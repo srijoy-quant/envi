@@ -86,6 +86,63 @@
 
     // AR Engine
     arEngine = new AREngine(CONFIG);
+
+    // Start AR engine (camera/webcam)
+    const canvas = document.getElementById('xr-canvas');
+    await arEngine.start(canvas, arUI);
+
+    // Add basic movement controls for webcam mode
+    if (arEngine.mode === 'webcam') {
+      let isDragging = false;
+      let lastX = 0, lastY = 0;
+      let yaw = 0, pitch = 0;
+
+      function updateCamera() {
+        if (arEngine.camera) {
+          arEngine.camera.rotation.y = yaw;
+          arEngine.camera.rotation.x = pitch;
+        }
+      }
+
+      canvas.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        lastX = e.clientX;
+        lastY = e.clientY;
+      });
+      window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        const dx = (e.clientX - lastX) * 0.01;
+        const dy = (e.clientY - lastY) * 0.01;
+        yaw -= dx;
+        pitch -= dy;
+        pitch = Math.max(-Math.PI/2, Math.min(Math.PI/2, pitch));
+        lastX = e.clientX;
+        lastY = e.clientY;
+        updateCamera();
+      });
+      window.addEventListener('mouseup', () => { isDragging = false; });
+
+      // Touch controls
+      canvas.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 1) {
+          isDragging = true;
+          lastX = e.touches[0].clientX;
+          lastY = e.touches[0].clientY;
+        }
+      });
+      window.addEventListener('touchmove', (e) => {
+        if (!isDragging || e.touches.length !== 1) return;
+        const dx = (e.touches[0].clientX - lastX) * 0.01;
+        const dy = (e.touches[0].clientY - lastY) * 0.01;
+        yaw -= dx;
+        pitch -= dy;
+        pitch = Math.max(-Math.PI/2, Math.min(Math.PI/2, pitch));
+        lastX = e.touches[0].clientX;
+        lastY = e.touches[0].clientY;
+        updateCamera();
+      });
+      window.addEventListener('touchend', () => { isDragging = false; });
+    }
   };
 
   // ── REQUEST WebXR SESSION ──────────────────────────────────
