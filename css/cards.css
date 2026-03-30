@@ -1,0 +1,64 @@
+/* EnviroSense AR — Floating AR Cards */
+
+/* ── BASE CARD ───────────────────────────────────────────── */
+.ar-card {
+  position: absolute;
+  background: var(--bg4);
+  border: 1px solid;
+  border-radius: var(--r-md);
+  padding: 10px 13px;
+  min-width: 140px;
+  max-width: 180px;
+  pointer-events: all;
+  cursor: pointer;
+  transition: transform 0.25s, opacity 0.35s, box-shadow 0.25s;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: card-appear 0.45s ease both;
+}
+
+.ar-card.hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: scale(0.88) !important;
+}
+
+.ar-card:hover {
+  transform: scale(1.05) translateY(-3px);
+}
+
+/* Card header row */
+.ar-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+/* ── CARD THEMES ─────────────────────────────────────────── */
+.card-air   { border-color: rgba(0,229,160,0.45);   }
+.card-wx    { border-color: rgba(79,195,247,0.45);  }
+.card-nasa  { border-color: rgba(255,154,60,0.45);  }
+.card-veg   { border-color: rgba(123,219,113,0.45); }
+.card-water { border-color: rgba(41,182,246,0.45);  }
+.card-eco   { border-color: rgba(179,157,255,0.45); }
+.card-geo   { border-color: rgba(165,214,167,0.45); }
+.card-bio   { border-color: rgba(255,107,107,0.45); }
+
+/* ── LEADER LINE LAYER ───────────────────────────────────── */
+#leader-svg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .ar-card {
+    min-width: 120px;
+    max-width: 150px;
+    padding: 8px 10px;
+  }
+}

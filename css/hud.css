@@ -1,0 +1,343 @@
+/* EnviroSense AR — HUD & Environment Styles */
+
+/* ── MAIN AR UI WRAPPER ─────────────────────────────────── */
+#ar-ui {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  display: none;
+}
+#ar-ui.active { display: block; }
+
+/* ── CAMERA / ENV BACKGROUND ────────────────────────────── */
+#cam-bg {
+  position: absolute;
+  inset: 0;
+  background: var(--bg);
+  overflow: hidden;
+}
+
+.cam-noise {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    0deg, transparent, transparent 2px,
+    rgba(0,229,160,0.012) 2px, rgba(0,229,160,0.012) 4px
+  );
+  pointer-events: none;
+}
+
+.env-scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.env-sky {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 55%;
+  background: linear-gradient(180deg, #040810 0%, #0B1C33 55%, #142A3F 100%);
+}
+
+.env-ground {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 45%;
+  background: linear-gradient(180deg, #0A1A10 0%, #050E08 100%);
+}
+
+.env-horizon {
+  position: absolute;
+  top: 55%; left: 0; right: 0;
+  height: 1px;
+  background: rgba(0,229,160,0.15);
+  box-shadow: 0 0 8px rgba(0,229,160,0.1);
+}
+
+/* ── AR FRAME OVERLAY ────────────────────────────────────── */
+.ar-frame {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.frame-corner {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border-color: var(--teal);
+  border-style: solid;
+  opacity: 0.7;
+}
+.fc-tl { top: 14px; left: 14px;  border-width: 2px 0 0 2px; }
+.fc-tr { top: 14px; right: 14px; border-width: 2px 2px 0 0; }
+.fc-bl { bottom: 14px; left: 14px;  border-width: 0 0 2px 2px; }
+.fc-br { bottom: 14px; right: 14px; border-width: 0 2px 2px 0; }
+
+.scan-line {
+  position: absolute;
+  left: 18px; right: 18px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--teal), transparent);
+  opacity: 0.35;
+  animation: scan 4s linear infinite;
+}
+
+.reticle {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 32px; height: 32px;
+}
+
+/* ── HUD TOP BAR ─────────────────────────────────────────── */
+.hud-top {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(180deg, rgba(4,8,14,0.92) 0%, transparent 100%);
+  pointer-events: all;
+  z-index: 10;
+}
+
+.hud-brand {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--teal);
+  letter-spacing: 0.1em;
+}
+
+.hud-coords {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+.hud-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.live-indicator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--teal);
+}
+
+.live-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--teal);
+  animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+#hud-time {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+/* ── HUD BOTTOM BAR ──────────────────────────────────────── */
+.hud-bottom {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 10px 18px 14px;
+  background: linear-gradient(0deg, rgba(4,8,14,0.96) 0%, transparent 100%);
+  pointer-events: all;
+  z-index: 10;
+}
+
+.layer-toggles {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 7px;
+}
+
+.layer-btn {
+  padding: 4px 11px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-family: var(--mono);
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid;
+  transition: opacity 0.2s, transform 0.1s;
+  letter-spacing: 0.05em;
+  pointer-events: all;
+  background: transparent;
+}
+.layer-btn.on  { opacity: 1; }
+.layer-btn.off { opacity: 0.3; }
+.layer-btn:active { transform: scale(0.95); }
+
+.lb-air   { color: var(--teal);   border-color: var(--teal);   }
+.lb-wx    { color: var(--blue);   border-color: var(--blue);   }
+.lb-nasa  { color: var(--nasa);   border-color: var(--nasa);   }
+.lb-veg   { color: var(--green);  border-color: var(--green);  }
+.lb-water { color: var(--water);  border-color: var(--water);  }
+.lb-eco   { color: var(--purple); border-color: var(--purple); }
+.lb-geo   { color: var(--geo);    border-color: var(--geo);    }
+.lb-bio   { color: var(--coral);  border-color: var(--coral);  }
+
+.hud-hint {
+  text-align: center;
+  font-size: 9px;
+  color: var(--text-muted);
+  font-family: var(--mono);
+  letter-spacing: 0.06em;
+}
+
+/* ── COMPASS ─────────────────────────────────────────────── */
+.compass {
+  position: absolute;
+  top: 68px; left: 16px;
+  width: 46px; height: 46px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--teal);
+  pointer-events: none;
+  background: rgba(5,10,14,0.7);
+}
+
+.compass-ring {
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  border: 0.5px solid var(--border-dim);
+}
+
+/* ── ALERT BADGE ─────────────────────────────────────────── */
+.alert-badge {
+  position: absolute;
+  top: 126px; left: 16px;
+  background: var(--coral-dim);
+  border: 1px solid rgba(255,107,107,0.4);
+  border-radius: var(--r-md);
+  padding: 6px 10px;
+  font-size: 10px;
+  font-family: var(--mono);
+  color: var(--coral);
+  max-width: 148px;
+  pointer-events: none;
+  animation: fadein 0.5s ease 2.5s both;
+}
+
+.alert-title {
+  font-weight: 700;
+  margin-bottom: 2px;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+/* ── DETAIL PANEL ────────────────────────────────────────── */
+#detail-panel {
+  position: absolute;
+  right: 14px;
+  top: 68px;
+  bottom: 88px;
+  width: 234px;
+  background: rgba(5,10,14,0.96);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow-y: auto;
+  padding: 14px;
+  pointer-events: all;
+  display: none;
+  animation: slide-in-right 0.28s ease;
+  scrollbar-width: none;
+  z-index: 20;
+}
+#detail-panel::-webkit-scrollbar { display: none; }
+#detail-panel.open { display: block; }
+
+#dp-close {
+  position: absolute;
+  top: 10px; right: 10px;
+  width: 22px; height: 22px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 0.5px solid var(--border);
+  font-size: 11px;
+  color: var(--text-dim);
+  background: transparent;
+  transition: background 0.15s;
+}
+#dp-close:hover { background: rgba(255,255,255,0.06); }
+
+#dp-title {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  padding-right: 28px;
+  line-height: 1.4;
+  letter-spacing: 0.05em;
+}
+
+/* ── WebXR LAUNCH BUTTON ─────────────────────────────────── */
+.webxr-btn {
+  position: absolute;
+  bottom: 58px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 9px 26px;
+  background: rgba(0,229,160,0.08);
+  border: 1.5px solid var(--teal);
+  color: var(--teal);
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  border-radius: var(--r-sm);
+  pointer-events: all;
+  text-transform: uppercase;
+  transition: background 0.2s, box-shadow 0.2s;
+  white-space: nowrap;
+  z-index: 10;
+}
+.webxr-btn:hover {
+  background: var(--teal-dim);
+  box-shadow: 0 0 18px var(--teal-glow);
+}
+
+/* ── XR CANVAS ───────────────────────────────────────────── */
+#xr-canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/* ── RESPONSIVE ──────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .hud-brand  { font-size: 11px; }
+  .hud-coords { font-size: 9px; }
+  .compass    { width: 38px; height: 38px; font-size: 10px; top: 62px; }
+  .alert-badge { top: 112px; }
+  #detail-panel { width: 200px; }
+  .layer-btn { padding: 3px 8px; font-size: 9px; }
+  .webxr-btn { font-size: 9px; padding: 8px 18px; }
+}
