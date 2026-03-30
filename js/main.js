@@ -90,6 +90,16 @@
     // Start AR engine (camera/webcam)
     const canvas = document.getElementById('xr-canvas');
     await arEngine.start(canvas, arUI);
+    console.log("Camera Mode:", arEngine.mode);
+    if (arEngine.mode === "webcam") {
+  console.log("Using webcam fallback");
+
+  if (!arEngine.video) {
+    console.error("❌ Webcam video NOT created");
+  } else {
+    console.log("✅ Webcam video element created");
+  }
+}
 
     // Add basic movement controls for webcam mode
     if (arEngine.mode === 'webcam') {
@@ -146,32 +156,7 @@
   };
 
   // ── REQUEST WebXR SESSION ──────────────────────────────────
-  window.requestXR = async function () {
-    uiController.setXRButtonState('active');
-    const arUI = document.getElementById('ar-ui');
-    try {
-      const check = await AREngine.isSupported();
-      if (!check.supported) {
-        console.info('[Main] WebXR not supported:', check.reason);
-        uiController.setXRButtonState('unsupported');
-        return;
-      }
-      await arEngine.requestSession(arUI);
-      arEngine.onHit = (matrix) => {
-        // Update reticle position on hit-test
-        const reticle = document.querySelector('.reticle');
-        if (reticle) reticle.style.opacity = '1';
-      };
-      arEngine.onFrame = (time, frame, pose) => {
-        // Per-frame updates could go here
-      };
-      uiController.setXRButtonState('active');
-    } catch (e) {
-      console.error('[Main] XR session failed:', e);
-      uiController.setXRButtonState('error');
-    }
-  };
-
+ 
   // ── KEY MAPPING ────────────────────────────────────────────
   function keyToCache(cardKey) {
     const map = { air: 'air', wx: 'weather', nasa: 'nasa', veg: 'vegetation', water: 'water', eco: 'ecosystem', geo: 'location', bio: 'biodiversity' };
